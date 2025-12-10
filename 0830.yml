@@ -1,0 +1,14 @@
+alias: "08:30"
+description: ""
+triggers:
+  - trigger: time
+    at: "08:30:00"
+conditions: []
+actions:
+  - action: switch.turn_on
+    data: {}
+    target:
+      entity_id:
+        - switch.tl_simple_switch
+        - switch.tl_inside_plug
+mode: single

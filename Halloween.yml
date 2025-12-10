@@ -1,0 +1,64 @@
+alias: Halloween
+description: ""
+triggers:
+  - trigger: time_pattern
+    seconds: /5
+actions:
+  - condition: or
+    conditions:
+      - condition: template
+        value_template: "{{ test == 1 }}"
+      - condition: and
+        conditions:
+          - condition: template
+            value_template: "{{ now().month == 10 and now().day >= 10 }}"
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: "23:59:59"
+  - parallel:
+      - sequence:
+          - delay: "{{range(2)|random}}"
+          - action: light.turn_on
+            target:
+              entity_id: "{{bulbs[test].left}}"
+            data:
+              color_name: "{{colors[range(3)|random]}}"
+              brightness_pct: 100
+              transition: 0
+      - sequence:
+          - delay: "{{range(2)|random}}"
+          - action: light.turn_on
+            target:
+              entity_id: "{{bulbs[test].right}}"
+            data:
+              color_name: "{{colors[range(3)|random]}}"
+              brightness_pct: 100
+              transition: 0
+      - sequence:
+          - delay: "{{range(2)|random}}"
+          - action: light.turn_on
+            target:
+              entity_id:
+                - "{{bulbs[test].porch1}}"
+                - "{{bulbs[test].porch2}}"
+            data:
+              color_name: "{{colors[range(3)|random]}}"
+              brightness_pct: 100
+              transition: 0
+mode: single
+variables:
+  test: 0
+  bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+  colors:
+    - orangered
+    - green
+    - purple

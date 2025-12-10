@@ -1,0 +1,1329 @@
+- id: '1723380157374'
+  alias: Christmas
+  triggers:
+  - trigger: time_pattern
+    seconds: /5
+  actions:
+  - parallel:
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunrise
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunrise
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{holiday_plug}}'
+        data: {}
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunset
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - '{{holiday_plug}}'
+          - '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: '{{ test == 1 }}'
+        - condition: and
+          conditions:
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: '23:59:59'
+      - parallel:
+        - action: light.turn_on
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+          data:
+            color_name: '{{(''red'',''green'')[((now().second/5)%2)|int]}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id:
+            - '{{bulbs[test].right}}'
+          data:
+            color_name: '{{(''green'',''red'')[((now().second/5)%2)|int]}}'
+            brightness_pct: 100
+            transition: 0
+    - sequence:
+      - condition: time
+        after: '23:59:59'
+        before: 00:00:01
+      - parallel:
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 2700
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].right}}'
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 4600
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+        - action: switch.turn_off
+          target:
+            entity_id:
+            - '{{holiday_plug}}'
+            - '{{outdoor_plug}}'
+          data: {}
+  variables:
+    test: 0
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+    holiday_plug: switch.tl_garage_plug_switch_2
+    outdoor_plug: switch.tl_outdoor_plug
+- id: '1728359141432'
+  alias: Halloween
+  triggers:
+  - trigger: time_pattern
+    seconds: /5
+  actions:
+  - parallel:
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunrise
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunrise
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunset
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: '{{ test == 1 }}'
+        - condition: and
+          conditions:
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: '23:59:59'
+      - parallel:
+        - sequence:
+          - delay: '{{range(2)|random}}'
+          - action: light.turn_on
+            target:
+              entity_id: '{{bulbs[test].left}}'
+            data:
+              color_name: '{{(''orange'',''green'',''violet'')[range(3)|random]}}'
+              brightness_pct: 100
+              transition: 0
+        - sequence:
+          - delay: '{{range(2)|random}}'
+          - action: light.turn_on
+            target:
+              entity_id: '{{bulbs[test].right}}'
+            data:
+              color_name: '{{(''orange'',''green'',''violet'')[range(3)|random]}}'
+              brightness_pct: 100
+              transition: 0
+        - sequence:
+          - delay: '{{range(2)|random}}'
+          - action: light.turn_on
+            target:
+              entity_id:
+              - '{{bulbs[test].porch1}}'
+              - '{{bulbs[test].porch2}}'
+            data:
+              color_name: '{{(''orange'',''green'',''violet'')[range(3)|random]}}'
+              brightness_pct: 100
+              transition: 0
+    - sequence:
+      - condition: time
+        after: '23:59:59'
+        before: 00:00:01
+      - parallel:
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 2700
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].right}}'
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 4600
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+        - action: switch.turn_off
+          target:
+            entity_id: '{{outdoor_plug}}'
+          data: {}
+  variables:
+    test: 0
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+    holiday_plug: switch.tl_garage_plug_switch_2
+    outdoor_plug: switch.tl_outdoor_plug
+- id: '1728473574794'
+  alias: Test Christmas
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    seconds: /5
+  actions:
+  - parallel:
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunrise
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunrise
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{holiday_plug}}'
+        data: {}
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunset
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - '{{holiday_plug}}'
+          - '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: '{{ test == 1 }}'
+        - condition: and
+          conditions:
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: '23:59:59'
+      - parallel:
+        - action: light.turn_on
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+          data:
+            color_name: '{{(''red'',''green'')[((now().second/5)%2)|int]}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id:
+            - '{{bulbs[test].right}}'
+          data:
+            color_name: '{{(''green'',''red'')[((now().second/5)%2)|int]}}'
+            brightness_pct: 100
+            transition: 0
+    - sequence:
+      - condition: time
+        after: '23:59:59'
+        before: 00:00:01
+      - parallel:
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 2700
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].right}}'
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 4600
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+        - action: switch.turn_off
+          target:
+            entity_id:
+            - '{{holiday_plug}}'
+            - '{{outdoor_plug}}'
+          data: {}
+  variables:
+    test: 1
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+    holiday_plug: switch.tl_garage_plug_switch_2
+    outdoor_plug: switch.tl_outdoor_plug
+- id: '1728473606799'
+  alias: Test Halloween
+  triggers:
+  - trigger: time_pattern
+    seconds: /5
+  actions:
+  - parallel:
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunrise
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunrise
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunset
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: '{{ test == 1 }}'
+        - condition: and
+          conditions:
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: '23:59:59'
+      - parallel:
+        - sequence:
+          - delay: '{{range(2)|random}}'
+          - action: light.turn_on
+            target:
+              entity_id: '{{bulbs[test].left}}'
+            data:
+              color_name: '{{(''orange'',''green'',''violet'')[range(3)|random]}}'
+              brightness_pct: 100
+              transition: 0
+        - sequence:
+          - delay: '{{range(2)|random}}'
+          - action: light.turn_on
+            target:
+              entity_id: '{{bulbs[test].right}}'
+            data:
+              color_name: '{{(''orange'',''green'',''violet'')[range(3)|random]}}'
+              brightness_pct: 100
+              transition: 0
+        - sequence:
+          - delay: '{{range(2)|random}}'
+          - action: light.turn_on
+            target:
+              entity_id:
+              - '{{bulbs[test].porch1}}'
+              - '{{bulbs[test].porch2}}'
+            data:
+              color_name: '{{(''orange'',''green'',''violet'')[range(3)|random]}}'
+              brightness_pct: 100
+              transition: 0
+    - sequence:
+      - condition: time
+        after: '23:59:59'
+        before: 00:00:01
+      - parallel:
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 2700
+            transistion: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].right}}'
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 4600
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+        - action: switch.turn_off
+          target:
+            entity_id: '{{outdoor_plug}}'
+          data: {}
+  variables:
+    test: 1
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+    holiday_plug: switch.tl_garage_plug_switch_2
+    outdoor_plug: switch.tl_outdoor_plug
+- id: '1736982033483'
+  alias: Test Valentine's Day
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    seconds: /5
+  conditions: []
+  actions:
+  - parallel:
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunrise
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunrise
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{holiday_plug}}'
+        data: {}
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunset
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - '{{holiday_plug}}'
+          - '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: '{{ test == 1 }}'
+        - condition: and
+          conditions:
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: '23:59:59'
+      - parallel:
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].left}}'
+          data:
+            color_name: '{{(''red'',''magenta'',''white'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].right}}'
+          data:
+            color_name: '{{(''magenta'',''white'',''red'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+          data:
+            color_name: '{{(''white'',''red'',''magenta'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+    - sequence:
+      - condition: time
+        after: '23:59:59'
+        before: 00:00:01
+      - parallel:
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 2700
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].right}}'
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 4600
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+        - action: switch.turn_off
+          target:
+            entity_id:
+            - '{{holiday_plug}}'
+            - '{{outdoor_plug}}'
+          data: {}
+  mode: single
+  variables:
+    test: 1
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+    holiday_plug: switch.tl_garage_plug_switch_2
+    outdoor_plug: switch.tl_outdoor_plug
+- id: '1736982315986'
+  alias: Valentine's Day
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    seconds: /5
+  conditions: []
+  actions:
+  - parallel:
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunrise
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunrise
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{holiday_plug}}'
+        data: {}
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunset
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - '{{holiday_plug}}'
+          - '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: '{{ test == 1 }}'
+        - condition: and
+          conditions:
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: '23:59:59'
+      - parallel:
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].left}}'
+          data:
+            color_name: '{{(''red'',''magenta'',''white'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].right}}'
+          data:
+            color_name: '{{(''magenta'',''white'',''red'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+          data:
+            color_name: '{{(''white'',''red'',''magenta'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+    - sequence:
+      - condition: time
+        after: '23:59:59'
+        before: 00:00:01
+      - parallel:
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 2700
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].right}}'
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 4600
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+        - action: switch.turn_off
+          target:
+            entity_id:
+            - '{{holiday_plug}}'
+            - '{{outdoor_plug}}'
+          data: {}
+  mode: single
+  variables:
+    test: 0
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+    holiday_plug: switch.tl_garage_plug_switch_2
+    outdoor_plug: switch.tl_outdoor_plug
+- id: '1742079404303'
+  alias: Test St. Patrick's Day
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    seconds: /4
+  conditions: []
+  actions:
+  - parallel:
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunrise
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunrise
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{holiday_plug}}'
+        data: {}
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunset
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - '{{holiday_plug}}'
+          - '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: '{{ test == 1 }}'
+        - condition: and
+          conditions:
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: '23:59:59'
+      - parallel:
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].left}}'
+          data:
+            rgb_color:
+            - '{{r1}}'
+            - '{{g1}}'
+            - '{{b1}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].right}}'
+          data:
+            rgb_color:
+            - '{{r2}}'
+            - '{{g2}}'
+            - '{{b2}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+          data:
+            rgb_color:
+            - '{{r3}}'
+            - '{{g3}}'
+            - '{{b3}}'
+            brightness_pct: 100
+            transition: 0
+    - sequence:
+      - condition: time
+        after: '23:59:59'
+        before: 00:00:01
+      - parallel:
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 2700
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].right}}'
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 4600
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+        - action: switch.turn_off
+          target:
+            entity_id:
+            - '{{holiday_plug}}'
+            - '{{outdoor_plug}}'
+          data: {}
+  mode: single
+  variables:
+    max: 64
+    r1: '{{range(max)|random}}'
+    g1: '{{(range(128)|random)+128}}'
+    b1: '{{range(max-r1)|random}}'
+    r2: '{{range(max)|random}}'
+    g2: '{{(range(128)|random)+128}}'
+    b2: '{{range(max-r2)|random}}'
+    r3: '{{range(max)|random}}'
+    g3: '{{(range(128)|random)+128}}'
+    b3: '{{range(max-r3)|random}}'
+    test: 1
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+    holiday_plug: switch.tl_garage_plug_switch_2
+    outdoor_plug: switch.tl_outdoor_plug
+- id: '1742156475230'
+  alias: St. Patrick's Day
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    seconds: /4
+  conditions: []
+  actions:
+  - parallel:
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunrise
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunrise
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{holiday_plug}}'
+        data: {}
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunset
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - '{{holiday_plug}}'
+          - '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: '{{ test == 1 }}'
+        - condition: and
+          conditions:
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: '23:59:59'
+      - parallel:
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].left}}'
+          data:
+            rgb_color:
+            - '{{r1}}'
+            - '{{g1}}'
+            - '{{b1}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].right}}'
+          data:
+            rgb_color:
+            - '{{r2}}'
+            - '{{g2}}'
+            - '{{b2}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+          data:
+            rgb_color:
+            - '{{r3}}'
+            - '{{g3}}'
+            - '{{b3}}'
+            brightness_pct: 100
+            transition: 0
+    - sequence:
+      - condition: time
+        after: '23:59:59'
+        before: 00:00:01
+      - parallel:
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 2700
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].right}}'
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 4600
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+        - action: switch.turn_off
+          target:
+            entity_id:
+            - '{{holiday_plug}}'
+            - '{{outdoor_plug}}'
+          data: {}
+  mode: single
+  variables:
+    max: 64
+    r1: '{{range(max)|random}}'
+    g1: '{{(range(128)|random)+128}}'
+    b1: '{{range(max-r1)|random}}'
+    r2: '{{range(max)|random}}'
+    g2: '{{(range(128)|random)+128}}'
+    b2: '{{range(max-r2)|random}}'
+    r3: '{{range(max)|random}}'
+    g3: '{{(range(128)|random)+128}}'
+    b3: '{{range(max-r3)|random}}'
+    test: 0
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+    holiday_plug: switch.tl_garage_plug_switch_2
+    outdoor_plug: switch.tl_outdoor_plug
+- id: '1753038949812'
+  alias: Test 4th of July
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    seconds: /5
+  conditions: []
+  actions:
+  - parallel:
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunrise
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunrise
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{holiday_plug}}'
+        data: {}
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunset
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - '{{holiday_plug}}'
+          - '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: '{{ test == 1 }}'
+        - condition: and
+          conditions:
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: '23:59:59'
+      - parallel:
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].left}}'
+          data:
+            color_name: '{{(''red'',''blue'',''white'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].right}}'
+          data:
+            color_name: '{{(''blue'',''white'',''red'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+          data:
+            color_name: '{{(''white'',''red'',''blue'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+    - sequence:
+      - condition: time
+        after: '23:59:59'
+        before: 00:00:01
+      - parallel:
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 2700
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].right}}'
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 4600
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+        - action: switch.turn_off
+          target:
+            entity_id:
+            - '{{holiday_plug}}'
+            - '{{outdoor_plug}}'
+          data: {}
+  mode: single
+  variables:
+    test: 1
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+    holiday_plug: switch.tl_garage_plug_switch_2
+    outdoor_plug: switch.tl_outdoor_plug
+- id: '1753039064595'
+  alias: 4th of July
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    seconds: /5
+  conditions: []
+  actions:
+  - parallel:
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunrise
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunrise
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id: '{{holiday_plug}}'
+        data: {}
+    - sequence:
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:00:01
+        - condition: sun
+          before: sunset
+          before_offset: 00:00:01
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - '{{holiday_plug}}'
+          - '{{outdoor_plug}}'
+        data: {}
+    - sequence:
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: '{{ test == 1 }}'
+        - condition: and
+          conditions:
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: '23:59:59'
+      - parallel:
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].left}}'
+          data:
+            color_name: '{{(''red'',''blue'',''white'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id: '{{bulbs[test].right}}'
+          data:
+            color_name: '{{(''blue'',''white'',''red'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+        - action: light.turn_on
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+          data:
+            color_name: '{{(''white'',''red'',''blue'')[((now().second/5)%3)|int]}}'
+            brightness_pct: 100
+            transition: 0
+    - sequence:
+      - condition: time
+        after: '23:59:59'
+        before: 00:00:01
+      - parallel:
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 2700
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].left}}'
+            - '{{bulbs[test].right}}'
+        - action: light.turn_on
+          data:
+            brightness_pct: 100
+            color_temp_kelvin: 4600
+            transition: 0
+          target:
+            entity_id:
+            - '{{bulbs[test].porch1}}'
+            - '{{bulbs[test].porch2}}'
+        - action: switch.turn_off
+          target:
+            entity_id:
+            - '{{holiday_plug}}'
+            - '{{outdoor_plug}}'
+          data: {}
+  mode: single
+  variables:
+    test: 0
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+    holiday_plug: switch.tl_garage_plug_switch_2
+    outdoor_plug: switch.tl_outdoor_plug
+- id: '1756223495286'
+  alias: Bed 1 Toggle
+  description: ''
+  triggers:
+  - device_id: 29cf968e6eff130a63d33259608e5229
+    domain: zha
+    type: remote_button_short_press
+    subtype: button
+    trigger: device
+  conditions: []
+  actions:
+  - type: toggle
+    device_id: 2c36945bda912ad0119ddf421df6f5eb
+    entity_id: switch.tl_bedroom_plug_switch_1
+    domain: switch
+  mode: single
+- id: '1756591537373'
+  alias: Lamp Toggle
+  description: ''
+  triggers:
+  - device_id: 4089acf071610b0aaa5ff15398eb46ce
+    domain: zha
+    type: remote_button_short_press
+    subtype: button
+    trigger: device
+  conditions: []
+  actions:
+  - type: toggle
+    device_id: e0a96ad2028f9f0f59df1eba4cecccc7
+    entity_id: d7a34cc13e8f8e1bb9026d947897e149
+    domain: light
+  mode: single
+- id: '1759177060649'
+  alias: Test White
+  description: ''
+  triggers: []
+  conditions: []
+  actions:
+  - parallel:
+    - action: light.turn_on
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 2700
+        transition: 0
+      target:
+        entity_id:
+        - '{{bulbs[test].left}}'
+        - '{{bulbs[test].right}}'
+    - action: light.turn_on
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 4600
+        transition: 0
+      target:
+        entity_id:
+        - '{{bulbs[test].porch1}}'
+        - '{{bulbs[test].porch2}}'
+  mode: single
+  variables:
+    test: 1
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+- id: '1759177923071'
+  alias: White
+  description: ''
+  triggers: []
+  conditions: []
+  actions:
+  - parallel:
+    - action: light.turn_on
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 2700
+        transition: 0
+      target:
+        entity_id:
+        - '{{bulbs[test].left}}'
+        - '{{bulbs[test].right}}'
+    - action: light.turn_on
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 4600
+        transition: 0
+      target:
+        entity_id:
+        - '{{bulbs[test].porch1}}'
+        - '{{bulbs[test].porch2}}'
+  mode: single
+  variables:
+    test: 0
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+- id: '1760443837224'
+  alias: Test Off
+  description: ''
+  triggers: []
+  conditions: []
+  actions:
+  - action: light.turn_off
+    data: {}
+    target:
+      entity_id:
+      - '{{bulbs[test].left}}'
+      - '{{bulbs[test].right}}'
+      - '{{bulbs[test].porch1}}'
+      - '{{bulbs[test].porch2}}'
+  mode: single
+  variables:
+    test: 1
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
+- id: '1760443878782'
+  alias: 'Off'
+  description: ''
+  triggers: []
+  conditions: []
+  actions:
+  - action: light.turn_off
+    data: {}
+    target:
+      entity_id:
+      - '{{bulbs[test].left}}'
+      - '{{bulbs[test].right}}'
+      - '{{bulbs[test].porch1}}'
+      - '{{bulbs[test].porch2}}'
+  mode: single
+  variables:
+    test: 0
+    bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4

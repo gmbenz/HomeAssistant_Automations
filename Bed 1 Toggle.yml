@@ -1,0 +1,15 @@
+alias: Bed 1 Toggle
+description: ""
+triggers:
+  - device_id: 29cf968e6eff130a63d33259608e5229
+    domain: zha
+    type: remote_button_short_press
+    subtype: button
+    trigger: device
+conditions: []
+actions:
+  - type: toggle
+    device_id: 2c36945bda912ad0119ddf421df6f5eb
+    entity_id: switch.tl_bedroom_plug_switch_1
+    domain: switch
+mode: single

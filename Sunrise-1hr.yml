@@ -1,0 +1,25 @@
+alias: Sunset -1 Hour
+description: ""
+triggers:
+  - trigger: sun
+    event: sunset
+    offset: "-00:60:00"
+conditions: []
+actions:
+  - parallel:
+      - action: light.turn_on
+        data:
+          brightness_pct: 100
+          transition: 0
+        target:
+          entity_id:
+            - light.tl_lamp
+            - light.sink_light
+      - action: switch.turn_on
+        data: {}
+        target:
+          entity_id:
+            - switch.tl_bedroom_plug_switch_1
+            - switch.tl_bedroom_plug_switch_2
+            - switch.tl_fireplace
+mode: single

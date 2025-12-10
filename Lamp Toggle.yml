@@ -1,0 +1,15 @@
+alias: Lamp Toggle
+description: ""
+triggers:
+  - device_id: 4089acf071610b0aaa5ff15398eb46ce
+    domain: zha
+    type: remote_button_short_press
+    subtype: button
+    trigger: device
+conditions: []
+actions:
+  - type: toggle
+    device_id: e0a96ad2028f9f0f59df1eba4cecccc7
+    entity_id: d7a34cc13e8f8e1bb9026d947897e149
+    domain: light
+mode: single

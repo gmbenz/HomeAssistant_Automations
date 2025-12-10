@@ -1,0 +1,26 @@
+alias: Sunrise
+description: ""
+triggers:
+  - trigger: sun
+    event: sunrise
+conditions: []
+actions:
+  - parallel:
+      - action: light.turn_off
+        data: {}
+        target:
+          entity_id:
+            - light.tl_driveway_left
+            - light.tl_driveway_right
+            - light.tl_porch_1
+            - light.tl_porch_2
+      - action: switch.turn_on
+        data: {}
+        target:
+          entity_id:
+            - switch.tl_garage_plugs_switch_2
+            - switch.tl_outside_plugs_switch_2
+            - switch.tl_inside_dual_plug_switch_1
+            - switch.tl_inside_dual_plug_switch_2
+            - switch.unnamed_ks240_led_3
+mode: single

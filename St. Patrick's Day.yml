@@ -1,0 +1,73 @@
+alias: St. Patrick's Day
+description: ""
+triggers:
+  - trigger: time_pattern
+    seconds: /4
+conditions: []
+actions:
+  - condition: or
+    conditions:
+      - condition: template
+        value_template: "{{ test == 1 }}"
+      - condition: and
+        conditions:
+          - condition: sun
+            after: sunset
+          - condition: time
+            before: "23:59:59"
+  - parallel:
+      - action: light.turn_on
+        target:
+          entity_id: "{{bulbs[test].left}}"
+        data:
+          rgb_color:
+            - "{{r1}}"
+            - "{{g1}}"
+            - "{{b1}}"
+          brightness_pct: 100
+          transition: 0
+      - action: light.turn_on
+        target:
+          entity_id: "{{bulbs[test].right}}"
+        data:
+          rgb_color:
+            - "{{r2}}"
+            - "{{g2}}"
+            - "{{b2}}"
+          brightness_pct: 100
+          transition: 0
+      - action: light.turn_on
+        target:
+          entity_id:
+            - "{{bulbs[test].porch1}}"
+            - "{{bulbs[test].porch2}}"
+        data:
+          rgb_color:
+            - "{{r3}}"
+            - "{{g3}}"
+            - "{{b3}}"
+          brightness_pct: 100
+          transition: 0
+mode: single
+variables:
+  rmax: 64
+  gmax: 128
+  r1: "{{range(rmax)|random}}"
+  g1: "{{(range(gmax)|random)+gmax}}"
+  b1: "{{range(rmax-r1)|random}}"
+  r2: "{{range(rmax)|random}}"
+  g2: "{{(range(gmax)|random)+gmax}}"
+  b2: "{{range(rmax-r2)|random}}"
+  r3: "{{range(rmax)|random}}"
+  g3: "{{(range(gmax)|random)+gmax}}"
+  b3: "{{range(rmax-r3)|random}}"
+  test: 0
+  bulbs:
+    - left: light.tl_driveway_left
+      right: light.tl_driveway_right
+      porch1: light.tl_porch_1
+      porch2: light.tl_porch_2
+    - left: light.tl_smart_bulb_1
+      right: light.tl_smart_bulb_2
+      porch1: light.tl_smart_bulb_3
+      porch2: light.tl_smart_bulb_4
